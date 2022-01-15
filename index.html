@@ -91,13 +91,11 @@ setInterval(() => {
   c.width ^= 0;
   X.fillStyle="#0008";
   for(i = l; p = a[--i];){
-    x = p.x;
-    y = p.y;
+    X.fillRect(p.x * 2, p.y * 2, 4, 4);
     if(!p.w){
       p.y += p.b += p.d / 10;
       p.x += p.a += p.c / 20;
     }
-    X.fillRect(x * 2, y * 2, 4, 4);
   }
 }, 33)
 </script>
