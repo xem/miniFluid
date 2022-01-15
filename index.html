@@ -32,28 +32,22 @@
 </textarea>
 
 <script>
-G = 1;      // gravity
-P = 3;      // Ossure
-V = 4;      // viscosity
 a = [];     // all particles
 c.width = 80;
 c.height = 50;
 X = c.getContext`2d`;
 
 // init
-a = [];
-y = 0;
+y =
 x = 0;
 for(C of v = O.value){
-  if(C === '\n'){
+  if(C == '\n'){
     y++;
     x = 0;
   }
   else {
     if(C !== ' ')
-      for(e = 0; e < 1; e++)
-        for(f = 0; f < 1; f++)
-          a.push({x: x + e, y: y + f, w: C === '#', a: 0, b: 0, c: 0, d: 0, D: 0}); // a, b, c, d: vx, vy, fx, fy
+        a.push({x, y, w: C == '#', a: 0, b: 0}); // a, b, c, d: vx, vy, fx, fy
     x++;
   }
 }
@@ -62,55 +56,46 @@ for(C of v = O.value){
 setInterval(() => {
 
   // density
-  for(i = a.length; i--;){
-    p = a[i];
+  // todo: replace a.length with value later
+  for(i = (l = a.length); p = a[--i];){
     p.D = p.w ? 9 : 0;
-    for(k = a.length; k--;){
-      q = a[k];
-      e = p.x - q.x, f = p.y - q.y; // e, f: dx, dy
+    for(k = l; q = a[--k];){
+      e = p.x - q.x; // dx
+      f = p.y - q.y; // dy
       g = e * e + f * f;
       if(g < 4) {
-        W = (g**.5) / 2 - 1;
+        W = (g ** .5) - 2;
         p.D += W * W;
       }
     }
   }
-  
+
   // force
-  for(i = a.length; i--;){
-    p = a[i];
-    p.d = G;
+  for(i = l; p = a[--i];){
+    p.d = 1;
     p.c = 0;
-    for(k = a.length; k--;){
-      q = a[k];
-      f = p.y - q.y, e = p.x - q.x;
-      g = f * f + e * e;
+    for(k = l; q = a[--k];){
+      // note: similar to loop above
+      e = p.x - q.x;
+      f = p.y - q.y;
+      g = e * e + f * f;
       if(g < 4){
-        W = (g ** .5) / 2 - 1;
-        p.d += (f * (3 - p.D - q.D) * P + p.b * V - q.b * V) * W / p.D;
-        p.c += (e * (3 - p.D - q.D) * P + p.a * V - q.a * V) * W / p.D;
+        W = (g ** .5) - 2;
+        p.d += (f * (3 - p.D - q.D) + p.b - q.b) * W / p.D;
+        p.c += (e * (3 - p.D - q.D) + p.a - q.a) * W / p.D;
       }
     }
   }
-  
+
   // draw
   c.width ^= 0;
   X.fillStyle="#0008";
-  for(i = a.length; i--;){
-    p = a[i];
-    x = p.x, y = p.y;
+  for(i = l; p = a[--i];){
+    X.fillRect(p.x * 2, p.y * 2, 4, 4);
     if(!p.w){
       p.y += p.b += p.d / 10;
       p.x += p.a += p.c / 20;
     }
-    
-    //X.fillRect(x, y * 2, 2, 2);
-    
-    // or:    
-    X.beginPath(); X.arc(x, y * 2, 1.5, 0, 7); X.fill();
-    
-    // or:
-    //X.fillText(".",x, y * 2);
   }
 }, 33)
 </script>
