@@ -44,13 +44,13 @@ a = [];
 y = 0;
 x = 0;
 for(C of v = O.value){
-  if(C === '\n'){
+  if(C == '\n'){
     y++;
     x = 0;
   }
   else {
     if(C !== ' ')
-        a.push({x, y, w: C === '#', a: 0, b: 0, c: 0, d: 0, D: 0}); // a, b, c, d: vx, vy, fx, fy
+        a.push({x, y, w: C == '#', a: 0, b: 0, c: 0, d: 0, D: 0}); // a, b, c, d: vx, vy, fx, fy
     x++;
   }
 }
