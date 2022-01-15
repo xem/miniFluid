@@ -32,7 +32,6 @@
 </textarea>
 
 <script>
-G = 1;      // gravity
 P = 3;      // Ossure
 V = 4;      // viscosity
 a = [];     // all particles
@@ -79,7 +78,7 @@ setInterval(() => {
   // force
   for(i = a.length; i--;){
     p = a[i];
-    p.d = G;
+    p.d = 1;
     p.c = 0;
     for(k = a.length; k--;){
       q = a[k];
