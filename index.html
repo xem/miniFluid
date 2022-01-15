@@ -32,8 +32,6 @@
 </textarea>
 
 <script>
-P = 3;      // Ossure
-V = 4;      // viscosity
 a = [];     // all particles
 c.width = 160;
 c.height = 50;
@@ -41,7 +39,7 @@ X = c.getContext`2d`;
 
 // init
 a = [];
-y = 0;
+y =
 x = 0;
 for(C of v = O.value){
   if(C == '\n'){
@@ -59,10 +57,11 @@ for(C of v = O.value){
 setInterval(() => {
 
   // density
-  for(i = a.length; i--;){
+  // todo: replace a.length with value later
+  for(i = (l = a.length); i--;){
     p = a[i];
     p.D = p.w ? 9 : 0;
-    for(k = a.length; k--;){
+    for(k = l; k--;){
       q = a[k];
       e = p.x - q.x, f = p.y - q.y; // e, f: dx, dy
       g = e * e + f * f;
@@ -74,18 +73,18 @@ setInterval(() => {
   }
 
   // force
-  for(i = a.length; i--;){
+  for(i = l; i--;){
     p = a[i];
     p.d = 1;
     p.c = 0;
-    for(k = a.length; k--;){
+    for(k = l; k--;){
       q = a[k];
       f = p.y - q.y, e = p.x - q.x;
       g = f * f + e * e;
       if(g < 4){
         W = (g ** .5) / 2 - 1;
-        p.d += (f * (3 - p.D - q.D) * P + p.b * V - q.b * V) * W / p.D;
-        p.c += (e * (3 - p.D - q.D) * P + p.a * V - q.a * V) * W / p.D;
+        p.d += (f * (3 - p.D - q.D) * 3 + p.b * 3 - q.b * 3) * W / p.D;
+        p.c += (e * (3 - p.D - q.D) * 3 + p.a * 3 - q.a * 3) * W / p.D;
       }
     }
   }
@@ -93,7 +92,7 @@ setInterval(() => {
   // draw
   c.width ^= 0;
   X.fillStyle="#0008";
-  for(i = a.length; i--;){
+  for(i = l; i--;){
     p = a[i];
     x = p.x, y = p.y;
     if(!p.w){
