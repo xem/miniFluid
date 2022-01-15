@@ -6,22 +6,13 @@
 <p><textarea id="previewarea" cols=80 rows=25></textarea>
 
 <script>
-accuracy = 1;
-Gravity = 1;
-Pressure = 3;
-Viscosity = 4;
-w = 79 * accuracy, h = 25 * accuracy, scale = 2;
-
-function particle(posx, posy, wallflag){
-  this.posx = posx;
-  this.posy = posy;
-  this.wallflag = wallflag;
-  this.velx = 0;
-  this.vely = 0;
-  this.forcex = 0;
-  this.forcey = 0;
-  this.density = 0;
-}
+var accuracy = 1;
+var Gravity = 1;
+var Pressure = 3;
+var Viscosity = 4;
+var w = 79 * accuracy;
+var h = 25 * accuracy;
+var scale = 2;
 
 var a = [];
 canvas.width = w * scale;
@@ -45,7 +36,16 @@ init = () => {
       var wall = c === '#';
       for (var dx = 0; dx < accuracy; dx++)
         for (var dy = 0; dy < accuracy; dy++)
-          a.push(new particle(x + dx, y + dy, wall));
+          a.push({
+            posx: x + dx,
+            posy: y + dy,
+            wallflag: wall,
+            velx: 0,
+            vely: 0,
+            forcex: 0,
+            forcey: 0,
+            density: 0
+          });
       x += accuracy;
     }
     else {
