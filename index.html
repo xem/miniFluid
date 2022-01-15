@@ -3,26 +3,26 @@
 <h2>MiniFluid</h2>
 <p>a micro fluid simulation inspired by <a href="https://www.ioccc.org/2012/endoh1/hint.html">endoh1.c</a> and its TS port <a href="https://github.com/phiresky/endoh1-ts">endoh1-ts</a>
 <p><canvas id=c style="width:400px;height:300px"></canvas>
-<p>Input:
-<p><textarea id="O" cols=80 rows=25>#  include<stdio.h>
+<p>Input:<p>
+<textarea id="O" cols=80 rows=25>#  include&lt;stdio.h>
 //  .IOCCC                                         Fluid-  #
-#  include <unistd.h>  //2012                                         _Sim!_  #
-#  include<complex.h>  //||||                     ,____.              IOCCC-  #
+#  include &lt;unistd.h>  //2012                                         _Sim!_  #
+#  include&lt;complex.h>  //||||                     ,____.              IOCCC-  #
 #  define              h for(                     x=011;              2012/*  #
 #  */-1>x              ++;)b[                     x]//-'              winner  #
 #  define              f(p,e)                                         for(/*  #
-#  */p=a;              e,p<r;                                        p+=5)//  #
+#  */p=a;              e,p&lt;r;                                        p+=5)//  #
 #  define              z(e,i)                                        f(p,p/*  #
-## */[i]=e)f(q,w=cabs  (d=*p-  *q)/2-     1)if(0  <(x=1-      w))p[i]+=w*/// ##
+## */[i]=e)f(q,w=cabs  (d=*p-  *q)/2-     1)if(0  &lt;(x=1-      w))p[i]+=w*/// ##
    double complex a [  97687]  ,*p,*q     ,*r=a,  w=0,d;    int x,y;char b/* ##
 ## */[6856]="\x1b[2J"  "\x1b"  "[1;1H     ", *o=  b, *t;   int main   (){/** ##
-## */for(              ;0<(x=  getc (     stdin)  );)w=x  >10?32<     x?4[/* ##
+## */for(              ;0&lt;(x=  getc (     stdin)  );)w=x  >10?32&lt;     x?4[/* ##
 ## */*r++              =w,r]=  w+1,*r     =r[5]=  x==35,  r+=9:0      ,w-I/* ##
 ## */:(x=              w+2);;  for(;;     puts(o  ),o=b+  4){z(p      [1]*/* ##
 ## */9,2)              w;z(G,  3)(d*(     3-p[2]  -q[2])  *P+p[4      ]*V-/* ##
 ## */q[4]              *V)/p[  2];h=0     ;f(p,(  t=b+10  +(x=*p      *I)+/* ##
 ## */80*(              y=*p/2  ),*p+=p    [4]+=p  [3]/10  *!p[1])     )x=0/* ##
-## */ <=x              &&x<79   &&0<=y&&y<23?1[1  [*t|=8   ,t]|=4,t+=80]=1/* ##
+## */ &lt;=x              &&x&lt;79   &&0&lt;=y&&y&lt;23?1[1  [*t|=8   ,t]|=4,t+=80]=1/* ##
 ## */, *t              |=2:0;    h=" '`-.|//,\\"  "|\\_"    "\\/\x23\n"[x/** ##
 ## */%80-              9?x[b]      :16];;usleep(  12321)      ;}return 0;}/* ##
 ####                                                                       ####
@@ -31,51 +31,31 @@
 </textarea>
 
 <script>
-A = 1;      // accuracy
 G = .8;     // gravity
 P = 3;      // Ossure
 V = 4;      // viscosity
-w = 79 * A; // canvas
-h = 25 * A;
-
-// Particle
-function p(x, y, w){
-  this.x = x;
-  this.y = y;
-  this.w = w;
-  this.vx = 0;  // velocity
-  this.vy = 0;
-  this.fx = 0;  // force
-  this.fy = 0;
-  this.d = 0;   // density
-}
-
-a = [];           // all particles
-c.width = w * 2;  // canvas
+w = 80;     // canvas
+h = 25;
+a = [];     // all particles
+c.width = w * 2;
 c.height = h * 2;
 ctx = c.getContext('2d');
-
-
-v = O.value;
 
 // init
 a = [];
 y = 0;
 x = 0;
-for(C of v){
+for(C of v = O.value){
   if(C === '\n'){
-    y += A;
+    y++;
     x = 0;
   }
-  else if(C !== ' '){
-    W = C === '#';
-    for(dx = 0; dx < A; dx++)
-      for(dy = 0; dy < A; dy++)
-        a.push(new p(x + dx, y + dy, W));
-    x += A;
-  }
   else {
-    x += A;
+    if(C !== ' ')
+      for(dx = 0; dx < 1; dx++)
+        for(dy = 0; dy < 1; dy++)
+          a.push({x:x + dx, y: y + dy, w: C === '#', vx: 0, vy: 0, fx: 0, fy: 0, d: 0});
+    x++;
   }
 }
 
