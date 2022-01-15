@@ -33,18 +33,18 @@ init = () => {
       x = 0;
     }
     else if (c !== ' ') {
-      var wall = c === '#';
+      var w = c === '#';
       for (var dx = 0; dx < accuracy; dx++)
         for (var dy = 0; dy < accuracy; dy++)
           a.push({
-            posx: x + dx,
-            posy: y + dy,
-            wallflag: wall,
-            velx: 0,
-            vely: 0,
-            forcex: 0,
-            forcey: 0,
-            density: 0
+            x: x + dx, // x
+            y: y + dy, // y
+            w, // wallflag
+            u: 0, // u
+            v: 0, // v
+            f: 0, // f
+            g: 0, // g
+            d: 0 // d
           });
       x += accuracy;
     }
@@ -54,17 +54,17 @@ init = () => {
   }
 }
 
-density = () => {
+d = () => {
   for (var _i = 0; _i < a.length; _i++) {
     var p = a[_i];
-    p.density = p.wallflag ? 9 : 0;
+    p.d = p.w ? 9 : 0;
     for (var _a = 0; _a < a.length; _a++) {
       var q = a[_a];
-      var dx = p.posx - q.posx, dy = p.posy - q.posy;
+      var dx = p.x - q.x, dy = p.y - q.y;
       var d2 = dx * dx + dy * dy;
       if (d2 < 4) {
         var w_1 = Math.sqrt(d2) / 2 - 1;
-        p.density += w_1 * w_1;
+        p.d += w_1 * w_1;
       }
     }
   }
@@ -73,16 +73,16 @@ density = () => {
 force = () => {
   for (var _i = 0; _i < a.length; _i++) {
     var p = a[_i];
-    p.forcey = Gravity;
-    p.forcex = 0;
+    p.g = Gravity;
+    p.f = 0;
     for (var _a = 0; _a < a.length; _a++) {
       var q = a[_a];
-      var dy = p.posy - q.posy, dx = p.posx - q.posx;
+      var dy = p.y - q.y, dx = p.x - q.x;
       var d2 = dy * dy + dx * dx;
       if (d2 < 4) {
         var w_2 = Math.sqrt(d2) / 2 - 1;
-        p.forcey += (dy * (3 - p.density - q.density) * Pressure + p.vely * Viscosity - q.vely * Viscosity) * w_2 / p.density;
-        p.forcex += (dx * (3 - p.density - q.density) * Pressure + p.velx * Viscosity - q.velx * Viscosity) * w_2 / p.density;
+        p.g += (dy * (3 - p.d - q.d) * Pressure + p.v * Viscosity - q.v * Viscosity) * w_2 / p.d;
+        p.f += (dx * (3 - p.d - q.d) * Pressure + p.u * Viscosity - q.u * Viscosity) * w_2 / p.d;
       }
     }
   }
@@ -93,10 +93,10 @@ draw = () => {
   ctx.fillStyle="#0008";
   for (var _i = 0; _i < a.length; _i++) {
     var p = a[_i];
-    var x = p.posx, y = p.posy;
-    if (!p.wallflag) {
-      p.posy += p.vely += p.forcey / 10;
-      p.posx += p.velx += p.forcex / 10;
+    var x = p.x, y = p.y;
+    if (!p.w) {
+      p.y += p.v += p.g / 10;
+      p.x += p.u += p.f / 10;
     }
     if (0 <= x && x < w && 0 <= y && y < h) {
       ctx.beginPath();
@@ -107,7 +107,7 @@ draw = () => {
 }
 
 nextframe = () => {
-  density();
+  d();
   force();
   draw();
 }
