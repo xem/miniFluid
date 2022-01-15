@@ -1,0 +1,155 @@
+<canvas id="c" width=800 height=400> </canvas>
+<script>
+
+/* Settings */
+
+var
+GRAVITY_X     = 0,
+GRAVITY_Y     = 0.5,
+GROUPS        = [100,10,100,100],
+
+ctx, width, height, num_x, num_y, particles, grid, spacing = 45, radius = 10, limit = radius * 0.66, textures, num_particles;
+
+var mouse = {
+    down: false,
+    x: 0,
+    y: 0
+};
+
+var run = function () {
+
+    c.width ^= 0;
+
+    for (var i = 0, l = num_x * num_y; i < l; i++) grid[i].length = 0;
+    
+    var i = num_particles;
+    while(i--) first_process(particles[i]);
+    i = num_particles;
+    while(i--) second_process(particles[i]);
+    requestAnimationFrame(run);
+};
+
+first_process = function (particle) {
+    
+    var g = grid[Math.round(particle.y / spacing) * num_x + Math.round(particle.x / spacing)];
+
+    if (g) g.close[g.length++] = particle;
+
+    particle.vx = particle.x - particle.px;
+    particle.vy = particle.y - particle.py;
+
+    particle.vx += GRAVITY_X;
+    particle.vy += GRAVITY_Y;
+    particle.px = particle.x;
+    particle.py = particle.y;
+    particle.x += particle.vx;
+    particle.y += particle.vy;
+};
+    
+second_process = function (particle) {
+
+    var force = 0,
+        force_b = 0,
+        cell_x = Math.round(particle.x / spacing),
+        cell_y = Math.round(particle.y / spacing),
+        close = [];
+
+    for (var x_off = -1; x_off < 2; x_off++) {
+        for (var y_off = -1; y_off < 2; y_off++) {
+            var cell = grid[(cell_y + y_off) * num_x + (cell_x + x_off)];
+            if (cell && cell.length) {
+                for (var a = 0, l = cell.length; a < l; a++) {
+                    var particle2 = cell.close[a];
+                    if (!(particle2.x == particle.x && particle2.y == particle.y)) {
+                        var dfx = particle2.x - particle.x;
+                        var dfy = particle2.y - particle.y;
+                        var distance = Math.sqrt(dfx * dfx + dfy * dfy);
+                        if (distance < spacing) {
+                            var m = 1 - (distance / spacing);
+                            force += Math.pow(m, 2);
+                            force_b += Math.pow(m, 3) / 2;
+                            particle2.m = m;
+                            particle2.dfx = (dfx / distance) * m;
+                            particle2.dfy = (dfy / distance) * m;
+                            close.push(particle2);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    force = (force - 10) * 0.5;
+
+    for (var i = 0, l = close.length; i < l; i++) {
+
+        var neighbor = close[i];
+
+        var press = force + force_b * neighbor.m;
+        if (particle.type != neighbor.type) press *= 0.35;
+
+        var dx = neighbor.dfx * press * 0.5;
+        var dy = neighbor.dfy * press * 0.5;
+
+        neighbor.x += dx;
+        neighbor.y += dy;
+        particle.x -= dx;
+        particle.y -= dy;
+    }
+
+    if (particle.x < limit) particle.x = limit;
+    else if (particle.x > width - limit) particle.x = width - limit;
+
+    if (particle.y < limit) particle.y = limit;
+    else if (particle.y > height - limit) particle.y = height - limit;
+
+    draw(particle);
+};
+        
+draw = function (particle) {
+
+    var size = radius * 2;
+    ctx.fillStyle = "#abf";
+    ctx.beginPath();
+    ctx.arc(particle.x, particle.y, size, 0, 7);
+    ctx.fill();
+};
+
+
+particles = [];
+grid      = [];
+close = [];
+textures  = [];
+ctx   	      = c.getContext('2d');
+height = h = 400;
+width = w = 800;
+
+num_x = Math.round(width / spacing) + 1;
+num_y = Math.round(height / spacing) + 1;
+
+for (var i = 0; i < num_x * num_y; i++) {
+    grid[i] = {
+        length: 0,
+        close: []
+    }
+}
+
+for (var i = 0; i < GROUPS.length; i++ ) {
+  for (var k = 0; k < GROUPS[i]; k++ ) {
+    particles.push(
+      {
+        type: i,
+        x: x = radius + Math.random() * (width - radius * 2),
+        y: y = radius + Math.random() * (height - radius * 2),
+        px: x,
+        py: y,
+        vx: 0,
+        vy: 0
+      }
+    )
+  }
+}
+
+num_particles = particles.length
+run();
+</script>
