@@ -1,120 +1,121 @@
 <!doctype html>
+<font face=calibri>
 <h2>MiniFluid</h2>
 <p>a micro fluid simulation inspired by <a href="https://www.ioccc.org/2012/endoh1/hint.html">endoh1.c</a> and its TS port <a href="https://github.com/phiresky/endoh1-ts">endoh1-ts</a>
-<p><canvas id="canvas" style="width:400px;height:300px"></canvas>
+<p><canvas id=c style="width:400px;height:300px"></canvas>
 <p>Input:
-<p><textarea id="previewarea" cols=80 rows=25></textarea>
+<p><textarea id="pre" cols=80 rows=25></textarea>
 
 <script>
-accuracy = 1;
-Gravity = 1;
-Pressure = 3;
-Viscosity = 4;
-w = 79 * accuracy, h = 25 * accuracy, scale = 2;
+A = 1;  // accuracy
+G = .8; // gravity
+P = 3;  // pressure
+V = 4;  // viscosity
+w = 79 * A;
+h = 25 * A;
 
-function particle(posx, posy, wallflag){
-  this.posx = posx;
-  this.posy = posy;
-  this.wallflag = wallflag;
-  this.velx = 0;
-  this.vely = 0;
-  this.forcex = 0;
-  this.forcey = 0;
-  this.density = 0;
+function particle(x, y, w){
+  this.x = x;
+  this.y = y;
+  this.w = w;
+  this.vx = 0; // velocity
+  this.vy = 0;
+  this.fx = 0; // force
+  this.fy = 0;
+  this.d = 0; // density
 }
 
-var a = [];
-canvas.width = w * scale;
-canvas.height = h * scale;
-var ctx = canvas.getContext('2d');
-var interval;
-previewarea.cols = w;
-previewarea.rows = h;
-
-init = () => {
-  a = [];
-  var input = previewarea.value;
-  var y = 0, x = 0;
-  for (var i = 0; i < input.length; i++) {
-    var c = input[i];
-    if (c === '\n') {
-      y += accuracy;
-      x = 0;
-    }
-    else if (c !== ' ') {
-      var wall = c === '#';
-      for (var dx = 0; dx < accuracy; dx++)
-        for (var dy = 0; dy < accuracy; dy++)
-          a.push(new particle(x + dx, y + dy, wall));
-      x += accuracy;
-    }
-    else {
-      x += accuracy;
-    }
-  }
-}
+a = [];
+c.width = w * 2;
+c.height = h * 2;
+ctx = c.getContext('2d');
+pre.cols = w;
+pre.rows = h;
 
 density = () => {
-  for (var _i = 0; _i < a.length; _i++) {
-    var p = a[_i];
-    p.density = p.wallflag ? 9 : 0;
-    for (var _a = 0; _a < a.length; _a++) {
-      var q = a[_a];
-      var dx = p.posx - q.posx, dy = p.posy - q.posy;
-      var d2 = dx * dx + dy * dy;
-      if (d2 < 4) {
-        var w_1 = Math.sqrt(d2) / 2 - 1;
-        p.density += w_1 * w_1;
+  
+}
+
+nextframe = () => {
+
+  // density
+  for(_i = 0; _i < a.length; _i++){
+    p = a[_i];
+    p.d = p.w ? 9 : 0;
+    for(_a = 0; _a < a.length; _a++){
+      q = a[_a];
+      dx = p.x - q.x, dy = p.y - q.y;
+      d2 = dx * dx + dy * dy;
+      if(d2 < 4) {
+        w_1 = Math.sqrt(d2) / 2 - 1;
+        p.d += w_1 * w_1;
       }
     }
   }
-}
-
-force = () => {
-  for (var _i = 0; _i < a.length; _i++) {
-    var p = a[_i];
-    p.forcey = Gravity;
-    p.forcex = 0;
-    for (var _a = 0; _a < a.length; _a++) {
-      var q = a[_a];
-      var dy = p.posy - q.posy, dx = p.posx - q.posx;
-      var d2 = dy * dy + dx * dx;
-      if (d2 < 4) {
-        var w_2 = Math.sqrt(d2) / 2 - 1;
-        p.forcey += (dy * (3 - p.density - q.density) * Pressure + p.vely * Viscosity - q.vely * Viscosity) * w_2 / p.density;
-        p.forcex += (dx * (3 - p.density - q.density) * Pressure + p.velx * Viscosity - q.velx * Viscosity) * w_2 / p.density;
+  
+  // force
+  for(_i = 0; _i < a.length; _i++){
+    p = a[_i];
+    p.fy = G;
+    p.fx = 0;
+    for(_a = 0; _a < a.length; _a++){
+      q = a[_a];
+      dy = p.y - q.y, dx = p.x - q.x;
+      d2 = dy * dy + dx * dx;
+      if(d2 < 4){
+        w_2 = Math.sqrt(d2) / 2 - 1;
+        p.fy += (dy * (3 - p.d - q.d) * P + p.vy * V - q.vy * V) * w_2 / p.d;
+        p.fx += (dx * (3 - p.d - q.d) * P + p.vx * V - q.vx * V) * w_2 / p.d;
       }
     }
   }
-}
-
-draw = () => {
-  canvas.width ^= 0;
+  
+  // draw
+  c.width ^= 0;
   ctx.fillStyle="#0008";
-  for (var _i = 0; _i < a.length; _i++) {
-    var p = a[_i];
-    var x = p.posx, y = p.posy;
-    if (!p.wallflag) {
-      p.posy += p.vely += p.forcey / 10;
-      p.posx += p.velx += p.forcex / 10;
+  for(_i = 0; _i < a.length; _i++){
+    p = a[_i];
+    x = p.x, y = p.y;
+    if(!p.w){
+      p.y += p.vy += p.fy / 10;
+      p.x += p.vx += p.fx / 10;
     }
-    if (0 <= x && x < w && 0 <= y && y < h) {
+    if(0 <= x && x < w && 0 <= y && y < h){
       ctx.beginPath();
-      ctx.arc(x * scale, y * scale, scale, 0, 7);
+      ctx.arc(x * 2, y * 2, 2, 0, 7);
       ctx.fill();
     }
   }
 }
 
-nextframe = () => {
-  density();
-  force();
-  draw();
-}
+fetch("inputs/glass-half-empty.txt").then(x=>x.text()).then(v=>{
 
-fetch("inputs/endoh1.c").then(x=>x.text()).then(v=>{
-  previewarea.value = v;
-  init();
+  // UI
+  pre.value = v;
+  
+  // init
+  a = [];
+  input = pre.value;
+  y = 0, x = 0;
+  for(i = 0; i < input.length; i++){
+    C = input[i];
+    if(C === '\n'){
+      y += A;
+      x = 0;
+    }
+    else if(C !== ' '){
+      wall = C === '#';
+      for(dx = 0; dx < A; dx++)
+        for(dy = 0; dy < A; dy++)
+          a.push(new particle(x + dx, y + dy, wall));
+      x += A;
+    }
+    else {
+      x += A;
+    }
+  }
+  
+  // loop
   setInterval(nextframe, 33);
 })
 </script>
