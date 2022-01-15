@@ -50,9 +50,7 @@ for(C of v = O.value){
   }
   else {
     if(C !== ' ')
-      for(e = 0; e < 1; e++)
-        for(f = 0; f < 1; f++)
-          a.push({x: x + e, y: y + f, w: C === '#', a: 0, b: 0, c: 0, d: 0, D: 0}); // a, b, c, d: vx, vy, fx, fy
+        a.push({x, y, w: C === '#', a: 0, b: 0, c: 0, d: 0, D: 0}); // a, b, c, d: vx, vy, fx, fy
     x++;
   }
 }
