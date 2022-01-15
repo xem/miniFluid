@@ -33,7 +33,7 @@
 
 <script>
 a = [];     // all particles
-c.width = 80;
+c.width = 160;
 c.height = 50;
 X = c.getContext`2d`;
 
@@ -91,7 +91,8 @@ setInterval(() => {
   c.width ^= 0;
   X.fillStyle="#0008";
   for(i = l; p = a[--i];){
-    X.fillRect(p.x * 2, p.y * 2, 4, 4);
+    X.fillRect(p.x * 2, p.y * 2, 4, 2);
+
     if(!p.w){
       p.y += p.b += p.d / 10;
       p.x += p.a += p.c / 20;
