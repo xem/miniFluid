@@ -60,9 +60,9 @@ setInterval(() => {
   for(i = (l = a.length); i--;){
     p = a[i];
     p.D = p.w ? 9 : 0;
-    for(k = l; k--;){
-      q = a[k];
-      e = p.x - q.x, f = p.y - q.y; // e, f: dx, dy
+    for(k = l; q = a[--k];){
+      e = p.x - q.x; // dx
+      f = p.y - q.y; // dy
       g = e * e + f * f;
       if(g < 4) {
         W = (g ** .5) - 2;
@@ -76,10 +76,11 @@ setInterval(() => {
     p = a[i];
     p.d = 1;
     p.c = 0;
-    for(k = l; k--;){
-      q = a[k];
-      f = p.y - q.y, e = p.x - q.x;
-      g = f * f + e * e;
+    for(k = l; q = a[--k];){
+      // note: similar to loop above
+      e = p.x - q.x;
+      f = p.y - q.y;
+      g = e * e + f * f;
       if(g < 4){
         W = (g ** .5) - 2;
         p.d += (f * (3 - p.D - q.D) + p.b - q.b) * W / p.D;
