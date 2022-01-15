@@ -4,68 +4,112 @@
 <p>a micro fluid simulation inspired by <a href="https://www.ioccc.org/2012/endoh1/hint.html">endoh1.c</a> and its TS port <a href="https://github.com/phiresky/endoh1-ts">endoh1-ts</a>
 <p><canvas id=c style="width:400px;height:300px"></canvas>
 <p>Input:
-<p><textarea id="pre" cols=80 rows=25></textarea>
+<p><textarea id="O" cols=80 rows=25>#  include<stdio.h>
+//  .IOCCC                                         Fluid-  #
+#  include <unistd.h>  //2012                                         _Sim!_  #
+#  include<complex.h>  //||||                     ,____.              IOCCC-  #
+#  define              h for(                     x=011;              2012/*  #
+#  */-1>x              ++;)b[                     x]//-'              winner  #
+#  define              f(p,e)                                         for(/*  #
+#  */p=a;              e,p<r;                                        p+=5)//  #
+#  define              z(e,i)                                        f(p,p/*  #
+## */[i]=e)f(q,w=cabs  (d=*p-  *q)/2-     1)if(0  <(x=1-      w))p[i]+=w*/// ##
+   double complex a [  97687]  ,*p,*q     ,*r=a,  w=0,d;    int x,y;char b/* ##
+## */[6856]="\x1b[2J"  "\x1b"  "[1;1H     ", *o=  b, *t;   int main   (){/** ##
+## */for(              ;0<(x=  getc (     stdin)  );)w=x  >10?32<     x?4[/* ##
+## */*r++              =w,r]=  w+1,*r     =r[5]=  x==35,  r+=9:0      ,w-I/* ##
+## */:(x=              w+2);;  for(;;     puts(o  ),o=b+  4){z(p      [1]*/* ##
+## */9,2)              w;z(G,  3)(d*(     3-p[2]  -q[2])  *P+p[4      ]*V-/* ##
+## */q[4]              *V)/p[  2];h=0     ;f(p,(  t=b+10  +(x=*p      *I)+/* ##
+## */80*(              y=*p/2  ),*p+=p    [4]+=p  [3]/10  *!p[1])     )x=0/* ##
+## */ <=x              &&x<79   &&0<=y&&y<23?1[1  [*t|=8   ,t]|=4,t+=80]=1/* ##
+## */, *t              |=2:0;    h=" '`-.|//,\\"  "|\\_"    "\\/\x23\n"[x/** ##
+## */%80-              9?x[b]      :16];;usleep(  12321)      ;}return 0;}/* ##
+####                                                                       ####
+###############################################################################
+**###########################################################################*/
+</textarea>
 
 <script>
-A = 1;  // accuracy
-G = .8; // gravity
-P = 3;  // pressure
-V = 4;  // viscosity
-w = 79 * A;
+A = 1;      // accuracy
+G = .8;     // gravity
+P = 3;      // Ossure
+V = 4;      // viscosity
+w = 79 * A; // canvas
 h = 25 * A;
 
-function particle(x, y, w){
+// Particle
+function p(x, y, w){
   this.x = x;
   this.y = y;
   this.w = w;
-  this.vx = 0; // velocity
+  this.vx = 0;  // velocity
   this.vy = 0;
-  this.fx = 0; // force
+  this.fx = 0;  // force
   this.fy = 0;
-  this.d = 0; // density
+  this.d = 0;   // density
 }
 
-a = [];
-c.width = w * 2;
+a = [];           // all particles
+c.width = w * 2;  // canvas
 c.height = h * 2;
 ctx = c.getContext('2d');
-pre.cols = w;
-pre.rows = h;
 
-density = () => {
-  
+
+v = O.value;
+
+// init
+a = [];
+y = 0;
+x = 0;
+for(C of v){
+  if(C === '\n'){
+    y += A;
+    x = 0;
+  }
+  else if(C !== ' '){
+    W = C === '#';
+    for(dx = 0; dx < A; dx++)
+      for(dy = 0; dy < A; dy++)
+        a.push(new p(x + dx, y + dy, W));
+    x += A;
+  }
+  else {
+    x += A;
+  }
 }
 
-nextframe = () => {
+// loop
+setInterval(() => {
 
   // density
-  for(_i = 0; _i < a.length; _i++){
-    p = a[_i];
+  for(i = 0; i < a.length; i++){
+    p = a[i];
     p.d = p.w ? 9 : 0;
-    for(_a = 0; _a < a.length; _a++){
-      q = a[_a];
+    for(k = 0; k < a.length; k++){
+      q = a[k];
       dx = p.x - q.x, dy = p.y - q.y;
       d2 = dx * dx + dy * dy;
       if(d2 < 4) {
-        w_1 = Math.sqrt(d2) / 2 - 1;
-        p.d += w_1 * w_1;
+        W = (d2**.5) / 2 - 1;
+        p.d += W * W;
       }
     }
   }
   
   // force
-  for(_i = 0; _i < a.length; _i++){
-    p = a[_i];
+  for(i = 0; i < a.length; i++){
+    p = a[i];
     p.fy = G;
     p.fx = 0;
-    for(_a = 0; _a < a.length; _a++){
-      q = a[_a];
+    for(k = 0; k < a.length; k++){
+      q = a[k];
       dy = p.y - q.y, dx = p.x - q.x;
       d2 = dy * dy + dx * dx;
       if(d2 < 4){
-        w_2 = Math.sqrt(d2) / 2 - 1;
-        p.fy += (dy * (3 - p.d - q.d) * P + p.vy * V - q.vy * V) * w_2 / p.d;
-        p.fx += (dx * (3 - p.d - q.d) * P + p.vx * V - q.vx * V) * w_2 / p.d;
+        W = (d2 ** .5) / 2 - 1;
+        p.fy += (dy * (3 - p.d - q.d) * P + p.vy * V - q.vy * V) * W / p.d;
+        p.fx += (dx * (3 - p.d - q.d) * P + p.vx * V - q.vx * V) * W / p.d;
       }
     }
   }
@@ -73,49 +117,14 @@ nextframe = () => {
   // draw
   c.width ^= 0;
   ctx.fillStyle="#0008";
-  for(_i = 0; _i < a.length; _i++){
-    p = a[_i];
+  for(i = 0; i < a.length; i++){
+    p = a[i];
     x = p.x, y = p.y;
     if(!p.w){
       p.y += p.vy += p.fy / 10;
-      p.x += p.vx += p.fx / 10;
+      p.x += p.vx += p.fx / 20;
     }
-    if(0 <= x && x < w && 0 <= y && y < h){
-      ctx.beginPath();
-      ctx.arc(x * 2, y * 2, 2, 0, 7);
-      ctx.fill();
-    }
+    ctx.fillRect(x * 2, y * 2, 4, 4);
   }
-}
-
-fetch("inputs/glass-half-empty.txt").then(x=>x.text()).then(v=>{
-
-  // UI
-  pre.value = v;
-  
-  // init
-  a = [];
-  input = pre.value;
-  y = 0, x = 0;
-  for(i = 0; i < input.length; i++){
-    C = input[i];
-    if(C === '\n'){
-      y += A;
-      x = 0;
-    }
-    else if(C !== ' '){
-      wall = C === '#';
-      for(dx = 0; dx < A; dx++)
-        for(dy = 0; dy < A; dy++)
-          a.push(new particle(x + dx, y + dy, wall));
-      x += A;
-    }
-    else {
-      x += A;
-    }
-  }
-  
-  // loop
-  setInterval(nextframe, 33);
-})
+}, 33);
 </script>
