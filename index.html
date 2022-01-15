@@ -1,9 +1,9 @@
 <!doctype html>
 <h2>MiniFluid</h2>
 <p>a micro fluid simulation inspired by <a href="https://www.ioccc.org/2012/endoh1/hint.html">endoh1.c</a> and its TS port <a href="https://github.com/phiresky/endoh1-ts">endoh1-ts</a>
-<p><canvas id="canvas" style="width:400px;height:300px"></canvas>
+<p><canvas id="c" style="width:400px;height:300px"></canvas>
 <p>Input:
-<p><textarea id="previewarea" cols=80 rows=25></textarea>
+<p><textarea id="p" cols=80 rows=25></textarea>
 
 <script>
 var accuracy = 1;
@@ -15,16 +15,16 @@ var h = 25 * accuracy;
 var scale = 2;
 
 var a = [];
-canvas.width = w * scale;
-canvas.height = h * scale;
-var ctx = canvas.getContext('2d');
+c.width = w * scale;
+c.height = h * scale;
+var ctx = c.getContext('2d');
 var interval;
-previewarea.cols = w;
-previewarea.rows = h;
+p.cols = w;
+p.rows = h;
 
 init = () => {
   a = [];
-  var input = previewarea.value;
+  var input = p.value;
   var y = 0, x = 0;
   for (var i = 0; i < input.length; i++) {
     var c = input[i];
@@ -89,7 +89,7 @@ force = () => {
 }
 
 draw = () => {
-  canvas.width ^= 0;
+  c.width ^= 0;
   ctx.fillStyle="#0008";
   for (var _i = 0; _i < a.length; _i++) {
     var p = a[_i];
@@ -113,7 +113,7 @@ nextframe = () => {
 }
 
 fetch("inputs/endoh1.c").then(x=>x.text()).then(v=>{
-  previewarea.value = v;
+  p.value = v;
   init();
   setInterval(nextframe, 33);
 })
