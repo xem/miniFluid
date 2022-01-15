@@ -57,8 +57,7 @@ setInterval(() => {
 
   // density
   // todo: replace a.length with value later
-  for(i = (l = a.length); i--;){
-    p = a[i];
+  for(i = (l = a.length); p = a[--i];){
     p.D = p.w ? 9 : 0;
     for(k = l; q = a[--k];){
       e = p.x - q.x; // dx
@@ -72,8 +71,7 @@ setInterval(() => {
   }
 
   // force
-  for(i = l; i--;){
-    p = a[i];
+  for(i = l; p = a[--i];){
     p.d = 1;
     p.c = 0;
     for(k = l; q = a[--k];){
@@ -92,9 +90,9 @@ setInterval(() => {
   // draw
   c.width ^= 0;
   X.fillStyle="#0008";
-  for(i = l; i--;){
-    p = a[i];
-    x = p.x, y = p.y;
+  for(i = l; p = a[--i];){
+    x = p.x;
+    y = p.y;
     if(!p.w){
       p.y += p.b += p.d / 10;
       p.x += p.a += p.c / 20;
