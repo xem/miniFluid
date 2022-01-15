@@ -4,7 +4,7 @@
 <p>a micro fluid simulation inspired by <a href="https://www.ioccc.org/2012/endoh1/hint.html">endoh1.c</a> and its TS port <a href="https://github.com/phiresky/endoh1-ts">endoh1-ts</a>
 <p><canvas id=c style="width:400px;height:300px"></canvas>
 <p>Input:<p>
-<textarea id="O" cols=80 rows=25>
+<textarea id=O cols=80 rows=25>
 
 #  include&lt;stdio.h>//  .IOCCC                                         Fluid-  #
 #  include &lt;unistd.h>  //2012                                         _Sim!_  #
@@ -32,7 +32,7 @@
 </textarea>
 
 <script>
-G = .8;     // gravity
+G = 1;     // gravity
 P = 3;      // Ossure
 V = 4;      // viscosity
 w = 80;     // canvas
@@ -40,7 +40,7 @@ h = 25;
 a = [];     // all particles
 c.width = w * 2;
 c.height = h * 2;
-ctx = c.getContext('2d');
+X = c.getContext`2d`;
 
 // init
 a = [];
@@ -53,9 +53,9 @@ for(C of v = O.value){
   }
   else {
     if(C !== ' ')
-      for(dx = 0; dx < 1; dx++)
-        for(dy = 0; dy < 1; dy++)
-          a.push({x:x + dx, y: y + dy, w: C === '#', vx: 0, vy: 0, fx: 0, fy: 0, d: 0});
+      for(e = 0; e < 1; e++)
+        for(f = 0; f < 1; f++)
+          a.push({x:x + e, y: y + f, w: C === '#', a: 0, b: 0, c: 0, d: 0, D: 0}); // a, b, c, d: vx, vy, fx, fy
     x++;
   }
 }
@@ -64,48 +64,48 @@ for(C of v = O.value){
 setInterval(() => {
 
   // density
-  for(i = 0; i < a.length; i++){
+  for(i = a.length; i--;){
     p = a[i];
-    p.d = p.w ? 9 : 0;
-    for(k = 0; k < a.length; k++){
+    p.D = p.w ? 9 : 0;
+    for(k = a.length; k--;){
       q = a[k];
-      dx = p.x - q.x, dy = p.y - q.y;
-      d2 = dx * dx + dy * dy;
-      if(d2 < 4) {
-        W = (d2**.5) / 2 - 1;
-        p.d += W * W;
+      e = p.x - q.x, f = p.y - q.y; // e, f: dx, dy
+      g = e * e + f * f;
+      if(g < 4) {
+        W = (g**.5) / 2 - 1;
+        p.D += W * W;
       }
     }
   }
   
   // force
-  for(i = 0; i < a.length; i++){
+  for(i = a.length; i--;){
     p = a[i];
-    p.fy = G;
-    p.fx = 0;
-    for(k = 0; k < a.length; k++){
+    p.d = G;
+    p.c = 0;
+    for(k = a.length; k--;){
       q = a[k];
-      dy = p.y - q.y, dx = p.x - q.x;
-      d2 = dy * dy + dx * dx;
-      if(d2 < 4){
-        W = (d2 ** .5) / 2 - 1;
-        p.fy += (dy * (3 - p.d - q.d) * P + p.vy * V - q.vy * V) * W / p.d;
-        p.fx += (dx * (3 - p.d - q.d) * P + p.vx * V - q.vx * V) * W / p.d;
+      f = p.y - q.y, e = p.x - q.x;
+      g = f * f + e * e;
+      if(g < 4){
+        W = (g ** .5) / 2 - 1;
+        p.d += (f * (3 - p.D - q.D) * P + p.b * V - q.b * V) * W / p.D;
+        p.c += (e * (3 - p.D - q.D) * P + p.a * V - q.a * V) * W / p.D;
       }
     }
   }
   
   // draw
   c.width ^= 0;
-  ctx.fillStyle="#0008";
-  for(i = 0; i < a.length; i++){
+  X.fillStyle="#0008";
+  for(i = a.length; i--;){
     p = a[i];
     x = p.x, y = p.y;
     if(!p.w){
-      p.y += p.vy += p.fy / 10;
-      p.x += p.vx += p.fx / 20;
+      p.y += p.b += p.d / 10;
+      p.x += p.a += p.c / 20;
     }
-    ctx.fillRect(x * 2, y * 2, 4, 4);
+    X.fillRect(x * 2, y * 2, 4, 4);
   }
 }, 33);
 </script>
