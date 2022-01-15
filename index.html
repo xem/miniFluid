@@ -1,111 +1,109 @@
 <!doctype html>
+<font face=calibri>
 <h2>MiniFluid</h2>
 <p>a micro fluid simulation inspired by <a href="https://www.ioccc.org/2012/endoh1/hint.html">endoh1.c</a> and its TS port <a href="https://github.com/phiresky/endoh1-ts">endoh1-ts</a>
-<p><canvas id="c" style="width:400px;height:300px"></canvas>
-<p>Input:
-<p><textarea id="p" cols=80 rows=25></textarea>
+<p><canvas id=c style="width:800px;height:250px"></canvas>
+<p>Input:<p>
+<textarea id=O cols=80 rows=25>
+
+#  include&lt;stdio.h>//  .IOCCC                                         Fluid-  #
+#  include &lt;unistd.h>  //2012                                         _Sim!_  #
+#  include&lt;complex.h>  //||||                     ,____.              IOCCC-  #
+#  define              h for(                     x=011;              2012/*  #
+#  */-1>x              ++;)b[                     x]//-'              winner  #
+#  define              f(p,e)                                         for(/*  #
+#  */p=a;              e,p&lt;r;                                        p+=5)//  #
+#  define              z(e,i)                                        f(p,p/*  #
+## */[i]=e)f(q,w=cabs  (d=*p-  *q)/2-     1)if(0  &lt;(x=1-      w))p[i]+=w*/// ##
+   double complex a [  97687]  ,*p,*q     ,*r=a,  w=0,d;    int x,y;char b/* ##
+## */[6856]="\x1b[2J"  "\x1b"  "[1;1H     ", *o=  b, *t;   int main   (){/** ##
+## */for(              ;0&lt;(x=  getc (     stdin)  );)w=x  >10?32&lt;     x?4[/* ##
+## */*r++              =w,r]=  w+1,*r     =r[5]=  x==35,  r+=9:0      ,w-I/* ##
+## */:(x=              w+2);;  for(;;     puts(o  ),o=b+  4){z(p      [1]*/* ##
+## */9,2)              w;z(G,  3)(d*(     3-p[2]  -q[2])  *P+p[4      ]*V-/* ##
+## */q[4]              *V)/p[  2];h=0     ;f(p,(  t=b+10  +(x=*p      *I)+/* ##
+## */80*(              y=*p/2  ),*p+=p    [4]+=p  [3]/10  *!p[1])     )x=0/* ##
+## */ &lt;=x              &&x&lt;79   &&0&lt;=y&&y&lt;23?1[1  [*t|=8   ,t]|=4,t+=80]=1/* ##
+## */, *t              |=2:0;    h=" '`-.|//,\\"  "|\\_"    "\\/\x23\n"[x/** ##
+## */%80-              9?x[b]      :16];;usleep(  12321)      ;}return 0;}/* ##
+####                                                                       ####
+###############################################################################
+**###########################################################################*/
+</textarea>
 
 <script>
-var Gravity = 1;
-var Pressure = 3;
-var Viscosity = 4;
-var w = 79;
-var h = 25;
-var scale = 2;
+G = 1;      // gravity
+P = 3;      // Ossure
+V = 4;      // viscosity
+a = [];     // all particles
+c.width = 160;
+c.height = 50;
+X = c.getContext`2d`;
 
-var a = [];
-c.width = w * scale;
-c.height = h * scale;
-var ctx = c.getContext('2d');
-var interval;
-
-init = () => {
-  a = [];
-  var input = p.value;
-  var y = 0, x = 0;
-  for (var i = 0; i < input.length; i++) {
-    var c = input[i];
-    if (c === '\n') {
-      y ++;
-      x = 0;
-    }
-    else if (c !== ' ') {
-      var w = c === '#';
-      a.push({
-        x, // x
-        y, // y
-        w, // wallflag
-        u: 0, // u
-        v: 0, // v
-        f: 0, // f
-        g: 0, // g
-        d: 0 // d
-      });
-      x ++;
-    }
-    else {
-      x ++;
-    }
+// init
+a = [];
+y = 0;
+x = 0;
+for(C of v = O.value){
+  if(C === '\n'){
+    y++;
+    x = 0;
+  }
+  else {
+    if(C !== ' ')
+      for(e = 0; e < 1; e++)
+        for(f = 0; f < 1; f++)
+          a.push({x: x + e, y: y + f, w: C === '#', a: 0, b: 0, c: 0, d: 0, D: 0}); // a, b, c, d: vx, vy, fx, fy
+    x++;
   }
 }
 
+// loop
+setInterval(() => {
 
-
-
-fetch("inputs/endoh1.c").then(x=>x.text()).then(v=>{
-  p.value = v;
-  init();
-  setInterval(() => {
-
-    for (var _i = 0; _i < a.length; _i++) {
-      var p = a[_i];
-      p.d = p.w ? 9 : 0;
-      for (var _a = 0; _a < a.length; _a++) {
-        var q = a[_a];
-        var dx = p.x - q.x, dy = p.y - q.y;
-        var d2 = dx * dx + dy * dy;
-        if (d2 < 4) {
-          var w_1 = Math.sqrt(d2) / 2 - 1;
-          p.d += w_1 * w_1;
-        }
+  // density
+  for(i = a.length; i--;){
+    p = a[i];
+    p.D = p.w ? 9 : 0;
+    for(k = a.length; k--;){
+      q = a[k];
+      e = p.x - q.x, f = p.y - q.y; // e, f: dx, dy
+      g = e * e + f * f;
+      if(g < 4) {
+        W = (g**.5) / 2 - 1;
+        p.D += W * W;
       }
     }
+  }
 
-    // force
-
-    for (var _i = 0; _i < a.length; _i++) {
-      var p = a[_i];
-      p.g = Gravity;
-      p.f = 0;
-      for (var _a = 0; _a < a.length; _a++) {
-        var q = a[_a];
-        var dy = p.y - q.y, dx = p.x - q.x;
-        var d2 = dy * dy + dx * dx;
-        if (d2 < 4) {
-          var w_2 = Math.sqrt(d2) / 2 - 1;
-          p.g += (dy * (3 - p.d - q.d) * Pressure + p.v * Viscosity - q.v * Viscosity) * w_2 / p.d;
-          p.f += (dx * (3 - p.d - q.d) * Pressure + p.u * Viscosity - q.u * Viscosity) * w_2 / p.d;
-        }
+  // force
+  for(i = a.length; i--;){
+    p = a[i];
+    p.d = G;
+    p.c = 0;
+    for(k = a.length; k--;){
+      q = a[k];
+      f = p.y - q.y, e = p.x - q.x;
+      g = f * f + e * e;
+      if(g < 4){
+        W = (g ** .5) / 2 - 1;
+        p.d += (f * (3 - p.D - q.D) * P + p.b * V - q.b * V) * W / p.D;
+        p.c += (e * (3 - p.D - q.D) * P + p.a * V - q.a * V) * W / p.D;
       }
     }
+  }
 
-    // draw
-
-    c.width ^= 0;
-    ctx.fillStyle="#0008";
-    for (var _i = 0; _i < a.length; _i++) {
-      var p = a[_i];
-      var x = p.x, y = p.y;
-      if (!p.w) {
-        p.y += p.v += p.g / 10;
-        p.x += p.u += p.f / 10;
-      }
-      if (0 <= x && x < w && 0 <= y && y < h) {
-        ctx.beginPath();
-        ctx.arc(x * scale, y * scale, scale, 0, 7);
-        ctx.fill();
-      }
+  // draw
+  c.width ^= 0;
+  X.fillStyle="#0008";
+  for(i = a.length; i--;){
+    p = a[i];
+    x = p.x, y = p.y;
+    if(!p.w){
+      p.y += p.b += p.d / 10;
+      p.x += p.a += p.c / 20;
     }
-  }, 33);
-})
+    X.fillRect(x * 2, y * 2, 4, 4);
+  }
+}, 33)
 </script>
