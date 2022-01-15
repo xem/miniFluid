@@ -1,155 +1,120 @@
-<canvas id="c" width=800 height=400> </canvas>
+<!doctype html>
+<h2>MiniFluid</h2>
+<p>a micro fluid simulation inspired by <a href="https://www.ioccc.org/2012/endoh1/hint.html">endoh1.c</a> and its TS port <a href="https://github.com/phiresky/endoh1-ts">endoh1-ts</a>
+<p><canvas id="canvas" style="width:400px;height:300px"></canvas>
+<p>Input:
+<p><textarea id="previewarea" cols=80 rows=25></textarea>
+
 <script>
+accuracy = 1;
+Gravity = 1;
+Pressure = 3;
+Viscosity = 4;
+w = 79 * accuracy, h = 25 * accuracy, scale = 2;
 
-/* Settings */
-
-var
-GRAVITY_X     = 0,
-GRAVITY_Y     = 0.5,
-GROUPS        = [100,10,100,100],
-
-ctx, width, height, num_x, num_y, particles, grid, spacing = 45, radius = 10, limit = radius * 0.66, textures, num_particles;
-
-var mouse = {
-    down: false,
-    x: 0,
-    y: 0
-};
-
-var run = function () {
-
-    c.width ^= 0;
-
-    for (var i = 0, l = num_x * num_y; i < l; i++) grid[i].length = 0;
-    
-    var i = num_particles;
-    while(i--) first_process(particles[i]);
-    i = num_particles;
-    while(i--) second_process(particles[i]);
-    requestAnimationFrame(run);
-};
-
-first_process = function (particle) {
-    
-    var g = grid[Math.round(particle.y / spacing) * num_x + Math.round(particle.x / spacing)];
-
-    if (g) g.close[g.length++] = particle;
-
-    particle.vx = particle.x - particle.px;
-    particle.vy = particle.y - particle.py;
-
-    particle.vx += GRAVITY_X;
-    particle.vy += GRAVITY_Y;
-    particle.px = particle.x;
-    particle.py = particle.y;
-    particle.x += particle.vx;
-    particle.y += particle.vy;
-};
-    
-second_process = function (particle) {
-
-    var force = 0,
-        force_b = 0,
-        cell_x = Math.round(particle.x / spacing),
-        cell_y = Math.round(particle.y / spacing),
-        close = [];
-
-    for (var x_off = -1; x_off < 2; x_off++) {
-        for (var y_off = -1; y_off < 2; y_off++) {
-            var cell = grid[(cell_y + y_off) * num_x + (cell_x + x_off)];
-            if (cell && cell.length) {
-                for (var a = 0, l = cell.length; a < l; a++) {
-                    var particle2 = cell.close[a];
-                    if (!(particle2.x == particle.x && particle2.y == particle.y)) {
-                        var dfx = particle2.x - particle.x;
-                        var dfy = particle2.y - particle.y;
-                        var distance = Math.sqrt(dfx * dfx + dfy * dfy);
-                        if (distance < spacing) {
-                            var m = 1 - (distance / spacing);
-                            force += Math.pow(m, 2);
-                            force_b += Math.pow(m, 3) / 2;
-                            particle2.m = m;
-                            particle2.dfx = (dfx / distance) * m;
-                            particle2.dfy = (dfy / distance) * m;
-                            close.push(particle2);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    force = (force - 10) * 0.5;
-
-    for (var i = 0, l = close.length; i < l; i++) {
-
-        var neighbor = close[i];
-
-        var press = force + force_b * neighbor.m;
-        if (particle.type != neighbor.type) press *= 0.35;
-
-        var dx = neighbor.dfx * press * 0.5;
-        var dy = neighbor.dfy * press * 0.5;
-
-        neighbor.x += dx;
-        neighbor.y += dy;
-        particle.x -= dx;
-        particle.y -= dy;
-    }
-
-    if (particle.x < limit) particle.x = limit;
-    else if (particle.x > width - limit) particle.x = width - limit;
-
-    if (particle.y < limit) particle.y = limit;
-    else if (particle.y > height - limit) particle.y = height - limit;
-
-    draw(particle);
-};
-        
-draw = function (particle) {
-
-    var size = radius * 2;
-    ctx.fillStyle = "#abf";
-    ctx.beginPath();
-    ctx.arc(particle.x, particle.y, size, 0, 7);
-    ctx.fill();
-};
-
-
-particles = [];
-grid      = [];
-close = [];
-textures  = [];
-ctx   	      = c.getContext('2d');
-height = h = 400;
-width = w = 800;
-
-num_x = Math.round(width / spacing) + 1;
-num_y = Math.round(height / spacing) + 1;
-
-for (var i = 0; i < num_x * num_y; i++) {
-    grid[i] = {
-        length: 0,
-        close: []
-    }
+function particle(posx, posy, wallflag){
+  this.posx = posx;
+  this.posy = posy;
+  this.wallflag = wallflag;
+  this.velx = 0;
+  this.vely = 0;
+  this.forcex = 0;
+  this.forcey = 0;
+  this.density = 0;
 }
 
-for (var i = 0; i < GROUPS.length; i++ ) {
-  for (var k = 0; k < GROUPS[i]; k++ ) {
-    particles.push(
-      {
-        type: i,
-        x: x = radius + Math.random() * (width - radius * 2),
-        y: y = radius + Math.random() * (height - radius * 2),
-        px: x,
-        py: y,
-        vx: 0,
-        vy: 0
-      }
-    )
+var a = [];
+canvas.width = w * scale;
+canvas.height = h * scale;
+var ctx = canvas.getContext('2d');
+var interval;
+previewarea.cols = w;
+previewarea.rows = h;
+
+init = () => {
+  a = [];
+  var input = previewarea.value;
+  var y = 0, x = 0;
+  for (var i = 0; i < input.length; i++) {
+    var c = input[i];
+    if (c === '\n') {
+      y += accuracy;
+      x = 0;
+    }
+    else if (c !== ' ') {
+      var wall = c === '#';
+      for (var dx = 0; dx < accuracy; dx++)
+        for (var dy = 0; dy < accuracy; dy++)
+          a.push(new particle(x + dx, y + dy, wall));
+      x += accuracy;
+    }
+    else {
+      x += accuracy;
+    }
   }
 }
 
-num_particles = particles.length
-run();
+density = () => {
+  for (var _i = 0; _i < a.length; _i++) {
+    var p = a[_i];
+    p.density = p.wallflag ? 9 : 0;
+    for (var _a = 0; _a < a.length; _a++) {
+      var q = a[_a];
+      var dx = p.posx - q.posx, dy = p.posy - q.posy;
+      var d2 = dx * dx + dy * dy;
+      if (d2 < 4) {
+        var w_1 = Math.sqrt(d2) / 2 - 1;
+        p.density += w_1 * w_1;
+      }
+    }
+  }
+}
+
+force = () => {
+  for (var _i = 0; _i < a.length; _i++) {
+    var p = a[_i];
+    p.forcey = Gravity;
+    p.forcex = 0;
+    for (var _a = 0; _a < a.length; _a++) {
+      var q = a[_a];
+      var dy = p.posy - q.posy, dx = p.posx - q.posx;
+      var d2 = dy * dy + dx * dx;
+      if (d2 < 4) {
+        var w_2 = Math.sqrt(d2) / 2 - 1;
+        p.forcey += (dy * (3 - p.density - q.density) * Pressure + p.vely * Viscosity - q.vely * Viscosity) * w_2 / p.density;
+        p.forcex += (dx * (3 - p.density - q.density) * Pressure + p.velx * Viscosity - q.velx * Viscosity) * w_2 / p.density;
+      }
+    }
+  }
+}
+
+draw = () => {
+  canvas.width ^= 0;
+  ctx.fillStyle="#0008";
+  for (var _i = 0; _i < a.length; _i++) {
+    var p = a[_i];
+    var x = p.posx, y = p.posy;
+    if (!p.wallflag) {
+      p.posy += p.vely += p.forcey / 10;
+      p.posx += p.velx += p.forcex / 10;
+    }
+    if (0 <= x && x < w && 0 <= y && y < h) {
+      ctx.beginPath();
+      ctx.arc(x * scale, y * scale, scale, 0, 7);
+      ctx.fill();
+    }
+  }
+}
+
+nextframe = () => {
+  density();
+  force();
+  draw();
+}
+
+fetch("inputs/endoh1.c").then(x=>x.text()).then(v=>{
+  previewarea.value = v;
+  init();
+  setInterval(nextframe, 33);
+})
 </script>
