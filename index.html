@@ -2,7 +2,7 @@
 <font face=calibri>
 <h2>MiniFluid</h2>
 <p>a micro fluid simulation inspired by <a href="https://www.ioccc.org/2012/endoh1/hint.html">endoh1.c</a> and its TS port <a href="https://github.com/phiresky/endoh1-ts">endoh1-ts</a>
-<p><canvas id=c style="width:800px;height:250px"></canvas>
+<p><canvas id=c style="width:800px;height:500px"></canvas>
 <p>Input:<p>
 <textarea id=O cols=80 rows=25>
 
@@ -36,7 +36,7 @@ G = 1;      // gravity
 P = 3;      // Ossure
 V = 4;      // viscosity
 a = [];     // all particles
-c.width = 160;
+c.width = 80;
 c.height = 50;
 X = c.getContext`2d`;
 
@@ -103,7 +103,14 @@ setInterval(() => {
       p.y += p.b += p.d / 10;
       p.x += p.a += p.c / 20;
     }
-    X.fillRect(x * 2, y * 2, 4, 4);
+    
+    //X.fillRect(x, y * 2, 2, 2);
+    
+    // or:    
+    //X.beginPath(); X.arc(x, y * 2, 2, 0, 7); X.fill();
+    
+    // or:
+    X.fillText(".",x, y * 2);
   }
 }, 33)
 </script>
