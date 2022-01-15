@@ -65,7 +65,7 @@ setInterval(() => {
       e = p.x - q.x, f = p.y - q.y; // e, f: dx, dy
       g = e * e + f * f;
       if(g < 4) {
-        W = (g**.5) / 2 - 1;
+        W = (g ** .5) - 2;
         p.D += W * W;
       }
     }
@@ -81,9 +81,9 @@ setInterval(() => {
       f = p.y - q.y, e = p.x - q.x;
       g = f * f + e * e;
       if(g < 4){
-        W = (g ** .5) / 2 - 1;
-        p.d += (f * (3 - p.D - q.D) * 3 + p.b * 3 - q.b * 3) * W / p.D;
-        p.c += (e * (3 - p.D - q.D) * 3 + p.a * 3 - q.a * 3) * W / p.D;
+        W = (g ** .5) - 2;
+        p.d += (f * (3 - p.D - q.D) + p.b - q.b) * W / p.D;
+        p.c += (e * (3 - p.D - q.D) + p.a - q.a) * W / p.D;
       }
     }
   }
