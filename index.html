@@ -6,12 +6,11 @@
 <p><textarea id="p" cols=80 rows=25></textarea>
 
 <script>
-var accuracy = 1;
 var Gravity = 1;
 var Pressure = 3;
 var Viscosity = 4;
-var w = 79 * accuracy;
-var h = 25 * accuracy;
+var w = 79;
+var h = 25;
 var scale = 2;
 
 var a = [];
@@ -27,27 +26,25 @@ init = () => {
   for (var i = 0; i < input.length; i++) {
     var c = input[i];
     if (c === '\n') {
-      y += accuracy;
+      y ++;
       x = 0;
     }
     else if (c !== ' ') {
       var w = c === '#';
-      for (var dx = 0; dx < accuracy; dx++)
-        for (var dy = 0; dy < accuracy; dy++)
-          a.push({
-            x: x + dx, // x
-            y: y + dy, // y
-            w, // wallflag
-            u: 0, // u
-            v: 0, // v
-            f: 0, // f
-            g: 0, // g
-            d: 0 // d
-          });
-      x += accuracy;
+      a.push({
+        x, // x
+        y, // y
+        w, // wallflag
+        u: 0, // u
+        v: 0, // v
+        f: 0, // f
+        g: 0, // g
+        d: 0 // d
+      });
+      x ++;
     }
     else {
-      x += accuracy;
+      x ++;
     }
   }
 }
