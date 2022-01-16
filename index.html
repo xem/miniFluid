@@ -33,28 +33,27 @@
 
 <script>
 
+
 // init
 a = [];
 X = c.getContext`2d`;
 y = x = 0;
 for(C of O.value)
-  C == "\n" // todo: save 1 char by doing: ` + line break + `
-  ? (y++, x = 0)
-  : (C !== " " && a.push({x, y, w: C == "#", a:0, b:0, c:0, d:0, D:0}), x++); // a, b, c, d, D: vx, vy, fx, fy, density
+  C < " "
+  ? (y++, x = -1)
+  : C < "!" || a.push({x, y, w: C == "#", a:0, b:0}), // a, b, c, d, D: vx, vy, fx, fy, density 
+                                                      // c,d,D can be assigned later
+  x++; 
+$ = Math.hypot;
 
 // loop
 setInterval(() => {
-
   // density
-  // todo: replace a.length with value later
   for(p of a){
-    p.D = p.w ? 9 : 0; // if wall, density = 9
+    p.D = p.w && 9 ; // if wall, density = 9
     for(q of a){
-      g = Math.hypot(p.x - q.x, p.y - q.y); // dist(dx, dy)
-      if(g < 2) {
-        g = g / 2 - 1;
-        p.D += g * g;
-      }
+      g = $(p.x - q.x, p.y - q.y) / 2; // dist(dx, dy)
+      p.D += g < 1 && --g * g;
     }
   }
 
@@ -63,12 +62,11 @@ setInterval(() => {
     p.d = 1;
     p.c = 0;
     for(q of a){
-      g = Math.hypot(e = p.x - q.x, f = p.y - q.y);
-      if(g < 2){
-        g = g / 2 - 1;
+      g = $(e = p.x - q.x, f = p.y - q.y) / 2;
+      if(g < 1){
 
         // Pressure = 3, Viscosity = 4 (can be changed but let's try to avoid leaks)
-        p.d += (f * (3 - p.D - q.D) * 3 + p.b * 4 - q.b * 4) * g / p.D; 
+        p.d += (f * (3 - p.D - q.D) * 3 + p.b * 4 - q.b * 4) * --g / p.D; 
         p.c += (e * (3 - p.D - q.D) * 3 + p.a * 4 - q.a * 4) * g / p.D;
       }
     }
@@ -80,7 +78,7 @@ setInterval(() => {
   for(p of a){
     x = p.x;
     y = p.y;
-    X.fillRect(p.x * 3, p.y * 5, 9, 8);
+    X.fillRect(x * 3, y * 5, 9, 8);
     if(!p.w){
       p.y += p.b += p.d / 25;
       p.x += p.a += p.c / 15;
