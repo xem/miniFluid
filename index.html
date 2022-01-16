@@ -38,7 +38,7 @@ a = [];
 X = c.getContext`2d`;
 y = x = 0;
 for(C of O.value)
-  C == "\n"
+  C == "\n" // todo: save 1 char by doing: ` + line break + `
   ? (y++, x = 0)
   : (C !== " " && a.push({x, y, w: C == "#", a:0, b:0, c:0, d:0, D:0}), x++); // a, b, c, d, D: vx, vy, fx, fy, density
 
@@ -47,22 +47,22 @@ setInterval(() => {
 
   // density
   // todo: replace a.length with value later
-  for(i = (l = a.length); p = a[--i];){
-    p.D = p.w ? 9 : 0;
-    for(k = l; q = a[--k];){
+  for(p of a){
+    p.D = p.w ? 9 : 0; // if wall, density = 9
+    for(q of a){
       g = Math.hypot(p.x - q.x, p.y - q.y); // dist(dx, dy)
       if(g < 2) {
-        g = (g**.5) / 2 - 1;
+        g = g / 2 - 1;
         p.D += g * g;
       }
     }
   }
 
   // force
-  for(i = l; p = a[--i];){
+  for(p of a){
     p.d = 1;
     p.c = 0;
-    for(k = l; q = a[--k];){
+    for(q of a){
       g = Math.hypot(e = p.x - q.x, f = p.y - q.y);
       if(g < 2){
         g = g / 2 - 1;
@@ -76,15 +76,15 @@ setInterval(() => {
 
   // draw
   c.width ^= 0;
-  X.fillStyle="#0005";
-  for(i = l; p = a[--i];){
+  X.fillStyle = "#0005";
+  for(p of a){
     x = p.x;
     y = p.y;
-    X.fillRect(p.x * 3, p.y * 5, 8, 8);
+    X.fillRect(p.x * 3, p.y * 5, 9, 8);
     if(!p.w){
-      p.y += p.b += p.d / 10;
-      p.x += p.a += p.c / 20;
+      p.y += p.b += p.d / 25;
+      p.x += p.a += p.c / 15;
     }
   }
-}, 33)
+}, 16)
 </script>
