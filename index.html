@@ -76,9 +76,7 @@ setInterval(() => {
   c.width ^= 0;
   X.fillStyle = "#0005";
   for(p of a){
-    x = p.x;
-    y = p.y;
-    X.fillRect(x * 3, y * 5, 9, 8);
+    X.fillRect(p.x * 3, p.y * 5, 9, 8);
     if(!p.w){
       p.y += p.b += p.d / 25;
       p.x += p.a += p.c / 15;
