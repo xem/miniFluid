@@ -45,6 +45,10 @@ for(C of O.value)
 // loop
 setInterval(() => {
 
+  // draw
+  c.width ^= 0;
+  X.fillStyle = "#0005";
+
   // density
   // todo: replace a.length with value later
   for(p of a){
@@ -55,6 +59,11 @@ setInterval(() => {
         g = g / 2 - 1;
         p.D += g * g;
       }
+    }
+    X.fillRect(p.x * 3, p.y * 5, 9, 8);
+    if(!p.w){
+      p.y += p.b += p.d / 25;
+      p.x += p.a += p.c / 15;
     }
   }
 
@@ -68,22 +77,9 @@ setInterval(() => {
         g = g / 2 - 1;
 
         // Pressure = 3, Viscosity = 4 (can be changed but let's try to avoid leaks)
-        p.d += (f * (3 - p.D - q.D) * 3 + p.b * 4 - q.b * 4) * g / p.D; 
+        p.d += (f * (3 - p.D - q.D) * 3 + p.b * 4 - q.b * 4) * g / p.D;
         p.c += (e * (3 - p.D - q.D) * 3 + p.a * 4 - q.a * 4) * g / p.D;
       }
-    }
-  }
-
-  // draw
-  c.width ^= 0;
-  X.fillStyle = "#0005";
-  for(p of a){
-    x = p.x;
-    y = p.y;
-    X.fillRect(p.x * 3, p.y * 5, 9, 8);
-    if(!p.w){
-      p.y += p.b += p.d / 25;
-      p.x += p.a += p.c / 15;
     }
   }
 }, 16)
