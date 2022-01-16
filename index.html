@@ -32,24 +32,15 @@
 </textarea>
 
 <script>
-a = [];     // all particles
-c.width = 160;
-c.height = 50;
-X = c.getContext`2d`;
 
 // init
+a = [];
+X = c.getContext`2d`;
 y = x = 0;
-for(C of v = O.value){
-  if(C == '\n'){
-    y++;
-    x = 0;
-  }
-  else {
-    if(C !== ' ')
-        a.push({x, y, w: C == '#', a: 0, b: 0, c: 0, d: 0, D: 0}); // a, b, c, d: vx, vy, fx, fy
-    x++;
-  }
-}
+for(C of O.value)
+  C == "\n"
+  ? (y++, x = 0)
+  : (C !== " " && a.push({x, y, w: C == "#", a:0, b:0, c:0, d:0, D:0}), x++); // a, b, c, d, D: vx, vy, fx, fy, density
 
 // loop
 setInterval(() => {
@@ -59,12 +50,10 @@ setInterval(() => {
   for(i = (l = a.length); p = a[--i];){
     p.D = p.w ? 9 : 0;
     for(k = l; q = a[--k];){
-      e = p.x - q.x; // e: dx
-      f = p.y - q.y; // f: dy
-      g = e * e + f * f;
-      if(g < 4) {
-        W = (g**.5) / 2 - 1;
-        p.D += W * W;
+      g = Math.hypot(p.x - q.x, p.y - q.y); // dist(dx, dy)
+      if(g < 2) {
+        g = (g**.5) / 2 - 1;
+        p.D += g * g;
       }
     }
   }
@@ -74,15 +63,13 @@ setInterval(() => {
     p.d = 1;
     p.c = 0;
     for(k = l; q = a[--k];){
-      e = p.x - q.x;
-      f = p.y - q.y;
-      g = e * e + f * f;
-      if(g < 4){
-        W = (g ** .5) / 2 - 1;
+      g = Math.hypot(e = p.x - q.x, f = p.y - q.y);
+      if(g < 2){
+        g = g / 2 - 1;
 
         // Pressure = 3, Viscosity = 4 (can be changed but let's try to avoid leaks)
-        p.d += (f * (3 - p.D - q.D) * 3 + p.b * 4 - q.b * 4) * W / p.D; 
-        p.c += (e * (3 - p.D - q.D) * 3 + p.a * 4 - q.a * 4) * W / p.D;
+        p.d += (f * (3 - p.D - q.D) * 3 + p.b * 4 - q.b * 4) * g / p.D; 
+        p.c += (e * (3 - p.D - q.D) * 3 + p.a * 4 - q.a * 4) * g / p.D;
       }
     }
   }
@@ -93,7 +80,7 @@ setInterval(() => {
   for(i = l; p = a[--i];){
     x = p.x;
     y = p.y;
-    X.fillRect(p.x * 2, p.y * 2, 4, 4);
+    X.fillRect(p.x * 3, p.y * 5, 8, 8);
     if(!p.w){
       p.y += p.b += p.d / 10;
       p.x += p.a += p.c / 20;
