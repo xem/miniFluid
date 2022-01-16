@@ -2,6 +2,7 @@
 <font face=calibri>
 <h2>MiniFluid</h2>
 <p>a micro fluid simulation inspired by <a href="https://www.ioccc.org/2012/endoh1/hint.html">endoh1.c</a> and its TS port <a href="https://github.com/phiresky/endoh1-ts">endoh1-ts</a>
+<p>Golfed by xem, p01, aemkei, fnoooot, RReverser
 <p><canvas id=c style="width:400px;height:250px"></canvas>
 <p>Input:<p>
 <textarea id=O cols=80 rows=25>
@@ -15,7 +16,7 @@
 #  */p=a;              e,p&lt;r;                                        p+=5)//  #
 #  define              z(e,i)                                        f(p,p/*  #
 ## */[i]=e)f(q,w=cabs  (d=*p-  *q)/2-     1)if(0  &lt;(x=1-      w))p[i]+=w*/// ##
-## double complex a [  97687]  ,*p,*q     ,*r=a,  w=0,d;    int x,y;char b/* ##
+   double complex a [  97687]  ,*p,*q     ,*r=a,  w=0,d;    int x,y;char b/* ##
 ## */[6856]="\x1b[2J"  "\x1b"  "[1;1H     ", *o=  b, *t;   int main   (){/** ##
 ## */for(              ;0&lt;(x=  getc (     stdin)  );)w=x  >10?32&lt;     x?4[/* ##
 ## */*r++              =w,r]=  w+1,*r     =r[5]=  x==35,  r+=9:0      ,w-I/* ##
@@ -38,32 +39,44 @@ a = [];
 X = c.getContext`2d`;
 y = x = 0;
 for(C of O.value)
-  C < " "
+  C < " " // todo: save 1 char by doing: ` + line break + `
   ? (y++, x = 0)
-  : (C > " " && a.push({x, y, p: C != "#", a:0, b:0, c:0, d:0, D:9}), x++); // a, b, c, d, D: vx, vy, fx, fy, density
-
-// compute (s ? density : force) for p 
-  M=(p,s)=>{
-  for(q of a){
-    g = Math.min(0, Math.hypot(e=p.x - q.x, f=p.y - q.y) / 2 -1); // dist(dx, dy)
-    s?
-    (p.d += (f * (3 - p.D - q.D) * 3 + (p.b - q.b) * 4) * g / p.D,
-    p.c += (e * (3 - p.D - q.D) * 3 + (p.a - q.a) * 4) * g / p.D):
-    (p.D+=g*g)
-  }
-}
+  : (C > " " && a.push({x, y, w: C == "#", a:0, b:0}), x++); // a, b, c, d, D: vx, vy, fx, fy, density
 
 // loop
-setInterval(_ => {
+setInterval(() => {
+
+  // density
+  for(p of a){
+    p.D = p.w * 9; // if wall, density = 9
+    for(q of a){
+      g = Math.hypot(p.x - q.x, p.y - q.y) / 2; // dist(dx, dy)
+      p.D += g < 1 && --g * g;
+    }
+  }
+
+  // force
+  for(p of a){
+    p.d = 1;
+    p.c = 0;
+    for(q of a){
+      g = Math.hypot(e = p.x - q.x, f = p.y - q.y) / 2;
+      if (g < 1) {
+        g = (g * 4 - 4) / p.D
+        p.d += (f * (z = 3 - p.D - q.D) + p.b - q.b) * g * 2;
+        p.c += (e * z + p.a - q.a) * g * 2;
+      }
+    }
+  }
+
+  // draw
   c.width ^= 0;
   for(p of a){
-    if(p.p){
+    X.fillRect(p.x * 3, p.y * 5, 8, 9);
+    if(!p.w){
       p.y += p.b += p.d / 25;
       p.x += p.a += p.c / 15;
-      M(p,p.D=p.c=0);M(p,p.d = 1)
     }
-    X.fillRect(p.x * 3, p.y * 5, 8, 9);
-}
-}, 16)
-
+  }
+}, 9)
 </script>
