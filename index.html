@@ -2,7 +2,7 @@
 <font face=calibri>
 <h2>MiniFluid</h2>
 <p>a micro fluid simulation inspired by <a href="https://www.ioccc.org/2012/endoh1/hint.html">endoh1.c</a> and its TS port <a href="https://github.com/phiresky/endoh1-ts">endoh1-ts</a>
-<p><canvas id=c style="width:800px;height:500px"></canvas>
+<p><canvas id=c style="width:400px;height:250px"></canvas>
 <p>Input:<p>
 <textarea id=O cols=80 rows=25>
 
@@ -38,8 +38,7 @@ c.height = 50;
 X = c.getContext`2d`;
 
 // init
-y =
-x = 0;
+y = x = 0;
 for(C of v = O.value){
   if(C == '\n'){
     y++;
@@ -47,7 +46,7 @@ for(C of v = O.value){
   }
   else {
     if(C !== ' ')
-        a.push({x, y, w: C == '#', a: 0, b: 0}); // a, b, c, d: vx, vy, fx, fy
+        a.push({x, y, w: C == '#', a: 0, b: 0, c: 0, d: 0, D: 0}); // a, b, c, d: vx, vy, fx, fy
     x++;
   }
 }
@@ -60,11 +59,11 @@ setInterval(() => {
   for(i = (l = a.length); p = a[--i];){
     p.D = p.w ? 9 : 0;
     for(k = l; q = a[--k];){
-      e = p.x - q.x; // dx
-      f = p.y - q.y; // dy
+      e = p.x - q.x; // e: dx
+      f = p.y - q.y; // f: dy
       g = e * e + f * f;
       if(g < 4) {
-        W = (g ** .5) - 2;
+        W = (g**.5) / 2 - 1;
         p.D += W * W;
       }
     }
@@ -75,24 +74,26 @@ setInterval(() => {
     p.d = 1;
     p.c = 0;
     for(k = l; q = a[--k];){
-      // note: similar to loop above
       e = p.x - q.x;
       f = p.y - q.y;
       g = e * e + f * f;
       if(g < 4){
-        W = (g ** .5) - 2;
-        p.d += (f * (3 - p.D - q.D) + p.b - q.b) * W / p.D;
-        p.c += (e * (3 - p.D - q.D) + p.a - q.a) * W / p.D;
+        W = (g ** .5) / 2 - 1;
+
+        // Pressure = 3, Viscosity = 4 (can be changed but let's try to avoid leaks)
+        p.d += (f * (3 - p.D - q.D) * 3 + p.b * 4 - q.b * 4) * W / p.D; 
+        p.c += (e * (3 - p.D - q.D) * 3 + p.a * 4 - q.a * 4) * W / p.D;
       }
     }
   }
 
   // draw
   c.width ^= 0;
-  X.fillStyle="#0008";
+  X.fillStyle="#0005";
   for(i = l; p = a[--i];){
-    X.fillRect(p.x * 2, p.y * 2, 4, 2);
-
+    x = p.x;
+    y = p.y;
+    X.fillRect(p.x * 2, p.y * 2, 4, 4);
     if(!p.w){
       p.y += p.b += p.d / 10;
       p.x += p.a += p.c / 20;
