@@ -38,9 +38,9 @@
 X=c.getContext`2d`;
 x=y=a=[];
 for(C of O.value)
-  C<" "
+  ++x,C<" "
   ?x=!++y
-  :(C>" "&&a.push({x,y,C,w:"#"==C,a:0,b:0}),x++);
+  :C>" "&&a.push({x,y,C,w:"#"==C,a:0,b:0});
   
 M=o=>a.map(p=>{
     for(q of(p.d=.1,p.c=0,o||(p.D=9*p.w),a))
