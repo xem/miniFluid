@@ -67,10 +67,12 @@ setInterval(_ => {
 
   // draw
   for(p of a) {
-    X.fillText(p.C, p.x * 3, p.y * 5);
-    if(!p.w){
-      p.y += p.b += p.d / 2;
-      p.x += p.a += p.c;
+    with(p) {
+      X.fillText(C, x * 3, y * 5);
+      if(!w){
+        y += b += d / 2;
+        x += a += c;
+      }
     }
   }
 }, 9)
