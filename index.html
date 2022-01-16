@@ -38,9 +38,9 @@ a = [];
 X = c.getContext`2d`;
 y = x = 0;
 for(C of O.value)
-  C == "\n" // todo: save 1 char by doing: ` + line break + `
+  C < " "
   ? (y++, x = 0)
-  : (C != " " && a.push({x, y, p: C != "#", a:0, b:0, c:0, d:0, D:0}), x++); // a, b, c, d, D: vx, vy, fx, fy, density
+  : (C > " " && a.push({x, y, p: C != "#", a:0, b:0, c:0, d:0, D:9}), x++); // a, b, c, d, D: vx, vy, fx, fy, density
 
 // compute (s ? density : force) for p 
   M=(p,s)=>{
@@ -58,8 +58,8 @@ setInterval(_ => {
   c.width ^= 0;
   X.globalAlpha = .5;
   for(p of a){
-    p.D = p.p ? 0 : 9; // if !particle, density = 9
     if(p.p){
+      p.D=0;
       p.y += p.b += p.d / 25;
       p.x += p.a += p.c / 15;
       M(p,p.d = 1);M(p,p.c = 0)
@@ -67,4 +67,5 @@ setInterval(_ => {
     X.fillRect(p.x * 3, p.y * 5, 8, 9);
 }
 }, 16)
+
 </script>
