@@ -51,10 +51,10 @@ M = s => {
     s || (p.D = p.w * 9); // if wall, density = 9
     for(q of a) {
       (g = Math.hypot(e = p.x - q.x, f = p.y - q.y) / 2 - 1) < 0
-      ? s
+      && (s
         ? ((g /= p.D * 2, p.d += (f * (z = 3 - p.D - q.D) + p.b - q.b) * g, p.c += (e * z + p.a - q.a) * g))
         : (p.D += g * g)
-      : 1
+      )
     }
   }
 }
