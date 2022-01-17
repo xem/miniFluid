@@ -1,11 +1,11 @@
 <!doctype html>
-<font face=calibri>
+<tt>
 <h2>MiniFluid</h2>
-<p>a micro fluid simulation inspired by <a href="https://www.ioccc.org/2012/endoh1/hint.html">endoh1.c</a> and its TS port <a href="https://github.com/phiresky/endoh1-ts">endoh1-ts</a>
+<p>A micro fluid simulation inspired by <a href="https://www.ioccc.org/2012/endoh1/hint.html">endoh1.c</a> and its TS port <a href="https://github.com/phiresky/endoh1-ts">endoh1-ts</a>
 <p>Golfed by <a href=https://twitter.com/xem rel=noopener>xem</a>, <a href=https://twitter.com/p01 rel=noopener>p01</a>, <a href=https://twitter.com/aemkei rel=noopener>Aemkei</a>, <a href=https://twitter.com/IrratixMusic rel=noopener>Irratix</a>, <a href=https://twitter.com/RReverser rel=noopener>RReverser</a>
 <p><canvas id=c style="width:400px;height:250px"></canvas>
 <p>Input:<p>
-<textarea id=O cols=80 rows=25>
+<textarea id=O cols=80 rows=27>
 
 
 
@@ -35,21 +35,24 @@
 </textarea>
 
 <script>
-X=c.getContext`2d`;
 x=y=a=[];
 for(C of O.value)
   ++x,C<" "
   ?x=!++y
-  :C>" "&&a.push({x,y,C,w:"#"==C,a:0,b:0});
+  :C>" "&&a.push({x,y,C,w:"#"==C,u:0,v:0});
   
-M=o=>a.map(p=>{
-    for(q of(p.d=.1,p.c=0,o||(p.D=9*p.w),a))
+M=o=>
+  a.map(p=>{
+    p.t=.1;
+    p.s=0;
+    o||(p.D=9*p.w);
+    for(q of a)
       (g=Math.hypot(e=p.x-q.x,f=p.y-q.y)/2-1)<0
       ?o
-        ?(g/=p.D,p.d+=(f*(z=3-p.D-q.D)+p.b-q.b)*g,p.c+=(e*z+p.a-q.a)*g)
+        ?(g/=p.D,p.t+=(f*(z=3-p.D-q.D)+p.v-q.v)*g,p.s+=(e*z+p.u-q.u)*g)
         :p.D+=g*g
       :1
 });
 
-setInterval`M(c.width^=M());for(p of a)with(p)X.fillText(C,3*x,5*y),w||(y+=b+=d/4,x+=a+=c/2)`
+setInterval`M(c.width^=M());for(p of a)with(p)c.getContext("2d").fillText(C,3*x,5*y),w||(y+=v+=t/4,x+=u+=s/2)`
 </script>
