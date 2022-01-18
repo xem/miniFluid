@@ -1,0 +1,21 @@
+<p>Code:<br><textarea id=c cols=80 rows=30></textarea>
+<p>Shape:<br><textarea id=s cols=80 rows=30></textarea>
+<p>Result:<br><textarea id=r cols=80 rows=30></textarea>
+<script>
+oninput = () => {
+  R = r.value = "";
+  j = 0;
+  if((S = s.value) && (C = c.value)){
+    for(i in S){
+      if(S[i] == " " || S[i] == "\n" || S[i] == "#"){
+        R += S[i];
+      }
+      else {
+        R += C[j++] || "#"
+      }
+    }
+  }
+  r.value = R;
+}
+
+</script>
