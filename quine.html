@@ -1,26 +1,16 @@
-<body id="b" style="font:2em/1 s;width:40ex;margin:auto"><tt><h1>1kb QUINE FLUID
-SIMULATION in 1KB</h1><p>
-View source + <a href="https://github.com
-/xem/miniFluid/">github</a></p>
-<canvas id="c" style="width:100%"><script>
-_=a=[];for(C of b.outerHTML.slice(0,-15)
-) _++,C!=0&&a.
- push({  x:_ %40   ,y: 4+_/40,C,w:'$'>
- C,     u:0 ,v:    0}) ;M=o=>a.  
- map     (p=> {p   .t= .1; p.s  =0;  
- o||     (p.  D=p   .w) ;a. map  (q=>  
- (g     =Math.hypot( e=p  .x-  
- q.x,f=  p.y  -q.   y)/ 2-1 )<0  ?o?  
- (g/=p.D ,p.  t+=   (f* (z= 3-p  .D-  
- q.D)+p. v-q  .v)   *g, p.s +=(  e*z  
- +p.     u-q  .u)   *g) :p. D+=  g*g  
- :1)     });  setInterval(  `M(  
- c.width^=   M() );for(p of a)
- with(p)c.getContext("2d").fillText(
- C,7*x, 5*y ),w||(y+= v+=t/8,x+=u+=s/8
-  )`,99)/*                            #
-#                                     #
-#                                     #
-#                                     #
-##                                   ##
- #####################################*/</script>
+<body id="b" style="font-size:6vw;width:29ch"><tt><b>1kb Fluid
+Simulation Quine</b><p>Click to restart / <a href="https://github.com/xem/
+miniFluid/">github</a></p><canvas width="512" height="192" id="c"
+style="width:99%;background:#9cf"><script>M=o=>//<3
+a.map(p         =>{   p.t=.1   ;p.s   =0;   o||(       p.D=p.w)
+;a.map(  q=>(g=Math   .hypot   (e=p   .x-   q.x,  f=    p.y-q.y
+)/2-1)<       0?o?(   g/=p.D   ,p.t   +=(   f*(z  =3-   p.D-q.D
+)+p.v-q   .v)*g,p.s   +=(e*z   +p.u   -q.   u)*g  ):    p.D+=g*
+g:1)});   ;;;;;;;;;       ;G=        b.outerHTML  .    slice/*#
+#*/(0,-22);Q=o=>{_=a=[];for(C of G)_++,C!=" "&&a.push({x:_%/*.#
+#*/64+4,y:5+_/64|0,C,w:"#"==C,u:0,v:0})};setInterval(`R-->0/*;#
+#*/&&Q();M(c.width^=M());for(p of a)with(p)c.getContext(/*Vida#
+#*/"2d").fillText(C,7*x,8*y),w||(y+=v+=t/4,x+=u+=s/8)`,R=19)/*#
+#*/;onclick=o=>R=1;/*                                        ##
+##                                                 ########### 
+ ###################################################*/</script>
